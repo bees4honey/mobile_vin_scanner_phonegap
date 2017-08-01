@@ -17,31 +17,28 @@
 <html>
 <head>
     <title></title>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-
+    
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/b4hvinscanner.js"></script>
     <script type="text/javascript">
         function onBodyLoad() {
-            document.addEventListener("deviceready", onDeviceReady, false);
             scanButton = document.getElementById("scan-button");
             resultSpan = document.getElementById("scan-result");
             scanButton.addEventListener("click", clickScan, false);
             createButton.addEventListener("click", clickCreate, false);
         }
+        
         function clickScan() {
             window.plugins.VINBarcodeScanner.scan(scannerSuccess, scannerFailure);
-            
         }
         
-        //------------------------------------------------------------------------------
         function scannerSuccess(result) {
             resultSpan.innerText = "success: " + JSON.stringify(result)
         }
-        
-        //------------------------------------------------------------------------------
+
         function scannerFailure(message) {
             resultSpan.innerText = "failure: " + JSON.stringify(message)
         }
@@ -50,7 +47,7 @@
 <body onload="onBodyLoad()">
     <p><br><br><br></p>
     <button id="scan-button">scan something</button>
-    <p>scanned: <span id="scan-result">n/a</span>
-
-   </body>
+    <p>scanned: <span id="scan-result">n/a</span></p>
+    
+</body>
 </html>
