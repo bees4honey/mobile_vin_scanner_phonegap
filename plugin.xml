@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Bees4Honey Vin Scanner PhoneGap Plugin XML for Android
+
+The purpose of this xml file will allow PhoneGap users to install the Bees4Honey
+mobile VIN Scanner through PhoneGap CLI. By including this file users of this plugin
+can simply add the plugin to their projects by running:
+  phonegap/cordova plugin add https://github.com/bees4honey/mobile_vin_scanner.git
+Once this plugin has been added users will still be required to add their application
+id reference into Scanner.java before building their projects.
+
+@author Matt Darkis <matt.darkis@bluespurs.com>
+@link http://bees4honey.com/
+@see http://docs.phonegap.com/en/3.4.0/plugin_ref_spec.md.html#Plugin%20Specification
+
+-->
+
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="com.bees4honey.vinscanner"
+        version="1.0.0">
+
+  <name>Bees4Honey</name>
+
+  <platform name="android">
+    <!-- register plugin -->
+    <config-file target="res/xml/config.xml" parent="/widget">
+      <feature name="VinBarScanner">
+        <param name="android-package" value="com.bees4honey.vinscanner.plugin.VinBarScanner"/>
+      </feature>
+    </config-file>
+    <!-- add permissions in AndroidManifest.xml file-->
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+      <uses-permission android:name="android.permission.CAMERA"/>
+      <uses-permission android:name="android.permission.VIBRATE"/>
+      <uses-feature android:name="android.hardware.camera.autofocus" android:required="true"></uses-feature>
+      <uses-feature android:name="android.hardware.camera" android:required="true"></uses-feature>
+    </config-file>
+    <!-- add Bees4Honey Activity to the "application" section of AndroidManifest.xml file -->
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <activity android:name="com.bees4honey.vinscanner.ScannerActivity"
+                android:screenOrientation="landscape"
+                android:configChanges="orientation|keyboardHidden"
+                android:windowSoftInputMode="stateAlwaysHidden"
+                android:theme="@style/Theme.AppCompat">
+
+        <intent-filter>
+          <action android:name="com.bees4honey.vinscanner.plugin.SCAN"/>
+          <category android:name="android.intent.category.DEFAULT"/>
+        </intent-filter>
+      </activity>
+    </config-file>
+    <!-- copy assets resources -->
+    <asset src="www/js/b4hvinscanner.js" target="js/b4hvinscanner.js"/>
+    <!-- copy Bees4honey Lib resources -->
+    <source-file src="android/libs/armeabi/libb4hvinscanner.so" target-dir="libs/armeabi" />
+    <source-file src="android/libs/arm64-v8a/libb4hvinscanner.so" target-dir="libs/arm64-v8a" />
+    <source-file src="android/libs/armeabi-v7a/libb4hvinscanner.so" target-dir="libs/armeabi-v7a" />
+    <source-file src="android/libs/x86/libb4hvinscanner.so" target-dir="libs/x86" />
+    <source-file src="android/libs/x86_64/libb4hvinscanner.so" target-dir="libs/x86_64" />
+    <!-- copy Bees4honey resources (images, etc) -->
+    <source-file src="android/res/drawable/light.png" target-dir="res/drawable"/>
+    <source-file src="android/res/drawable/light_on.png" target-dir="res/drawable"/>
+    <source-file src="android/res/drawable/rotate.png" target-dir="res/drawable"/>
+     <source-file src="android/res/drawable/aim_2d.9.png" target-dir="res/drawable"/>
+    <source-file src="android/res/layout/scanner_activity.xml" target-dir="res/layout"/>
+    <source-file src="android/res/layout/scanner_fragment.xml" target-dir="res/layout"/>
+    <!-- add Bees4honey plugin source code -->
+    <source-file src="android/src/com/bees4honey/vinscanner/plugin/VinBarScanner.java" target-dir="src/com/bees4honey/vinscanner/plugin"/>
+    <source-file src="android/src/com/bees4honey/vinscanner/B4HScanner.java" target-dir="src/com/bees4honey/vinscanner"/>
+    <source-file src="android/src/com/bees4honey/vinscanner/ImageBuffer.java" target-dir="src/com/bees4honey/vinscanner"/>
+    <source-file src="android/src/com/bees4honey/vinscanner/ScannerActivity.java" target-dir="src/com/bees4honey/vinscanner"/>
+    <source-file src="android/src/com/bees4honey/vinscanner/ScannerFragment.java" target-dir="src/com/bees4honey/vinscanner"/>
+    <source-file src="android/src/com/bees4honey/vinscanner/ScannerListener.java" target-dir="src/com/bees4honey/vinscanner"/>
+    <source-file src="android/src/com/bees4honey/vinscanner/ViewFinder.java" target-dir="src/com/bees4honey/vinscanner"/>
+        
+    <framework src="com.android.support:appcompat-v7:23+" />
+  </platform>
+
+  <!-- ios -->
+  <platform name="ios">
+    <!-- Cordova >= 2.8 -->
+    <config-file target="config.xml" parent="/*">
+      <feature name="VinBarScanner">
+        <param name="ios-package" value="B4HVINScannerPluginClass" />
+      </feature>
+    </config-file>
+
+    <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+      <string>Camera is required to scan VIN Codes</string>
+    </config-file>
+
+    <asset src="www/js/b4hvinscanner.js" target="js/b4hvinscanner.js"/>
+
+    <header-file src="ios/src/B4HOverlayViewController.h" />
+    <source-file src="ios/src/B4HOverlayViewController.m" />
+    <resource-file src="ios/src/B4HOverlayViewController.xib"/>
+
+    <header-file src="ios/src/B4HScannerController.h" />
+
+    <header-file src="ios/src/B4HVINScannerPluginClass.h" />
+    <source-file src="ios/src/B4HVINScannerPluginClass.m" />
+
+    <header-file src="ios/src/base64.h"/>
+    <source-file src="ios/src/base64.m"/>
+
+    <source-file src="ios/src/libB4HVINScanner.a" framework="true"/>
+
+    <resource-file src="ios/images/light.png"/>
+    <resource-file src="ios/images/aim_2d.png"/>
+    <resource-file src="ios/images/backgroundLandscapeHorizontal.png"/>
+    <resource-file src="ios/images/backgroundLandscapeVertical.png"/>
+    <resource-file src="ios/images/backgroundPortraitHorizontal.png"/>
+    <resource-file src="ios/images/backgroundPortraitVertical.png"/>
+    <framework src="libiconv.dylib" />
+    <framework src="libstdc++.tbd" />
+    <framework src="AVFoundation.framework" />
+    <framework src="AssetsLibrary.framework" />
+    <framework src="Security.framework" />
+    <framework src="CoreVideo.framework" />
+    <framework src="QuartzCore.framework" />
+  </platform>
+
+</plugin>

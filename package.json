@@ -1,0 +1,27 @@
+{
+  "name": "com.bees4honey.vinscanner",
+  "version": "1.0.0",
+  "description": "Phonegap plugin for bees4honey VIN scanner SDK",
+  "cordova": {
+    "id": "com.bees4honey.vinscanner",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bees4honey/mobile_vin_scanner_phonegap.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "bees4honey",
+  "license": "Paid usage, free trial",
+  "bugs": {
+    "url": "https://github.com/bees4honey/mobile_vin_scanner_phonegap/issues"
+  },
+  "homepage": "https://github.com/bees4honey/mobile_vin_scanner_phonegap#readme"
+}
