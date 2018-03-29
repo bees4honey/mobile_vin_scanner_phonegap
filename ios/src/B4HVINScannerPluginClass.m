@@ -1,9 +1,9 @@
 //
-//	B4HVINScannerPluginClass.m
-//	ScannerLibrary
+//  B4HVINScannerPluginClass.m
+//  ScannerLibrary
 //
-//	Created by bees4honey developer.
-//	Copyright (c) 2012 bees4honey. All rights reserved.
+//  Created by bees4honey developer.
+//  Copyright (c) 2012 bees4honey. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -22,13 +22,12 @@
 @end
 
 @interface B4HVINScannerProcessor : NSObject<B4HOverlayDelegate>
-
-
+@property (nonatomic, copy) NSString *orientationMaskKey;
 @property (nonatomic, strong) B4HVINScannerPluginClass* plugin;
 @property (nonatomic, strong) UIViewController* parentViewController;
 @property (nonatomic, strong) B4HOverlayViewController* scannerViewController;
 
-- (id)initWithPlugin:(B4HVINScannerPluginClass*)plugin parentViewController:(UIViewController*)parentViewController;
+- (instancetype)initWithPlugin:(B4HVINScannerPluginClass*)plugin parentViewController:(UIViewController*)parentViewController orientationMaskKey:(NSString*)orientationMaskKey;
 - (void)scanBarcode;
 - (void)openScannerView;
 - (NSString*)checkLibraryStatus:(B4HScannerController*)scanner;
@@ -42,7 +41,7 @@
     NSString* result = nil;
     Class aClass = NSClassFromString(@"AVCaptureSession");
     if (aClass == nil)
-	{
+    {
         return @"AVFoundation Framework is not available. VIN Scanning is not supported.";
     }
     return result;
@@ -55,11 +54,15 @@
     NSString* AVFoundationErrorMessage;
     AVFoundationErrorMessage = [self isAVFoundationAvailable];
     if (AVFoundationErrorMessage)
-	{
+    {
         [self returnError:AVFoundationErrorMessage];
         return;
     }
-    processor = [[B4HVINScannerProcessor alloc] initWithPlugin:self parentViewController:self.viewController];
+
+    NSString *mask = [command argumentAtIndex:0 withDefault:nil];
+    processor = [[B4HVINScannerProcessor alloc] initWithPlugin:self
+                                          parentViewController:self.viewController
+                                            orientationMaskKey:mask];
     [processor performSelector:@selector(scanBarcode) withObject:nil afterDelay:0];
 }
 
@@ -88,10 +91,13 @@
 @synthesize parentViewController = __parentViewController;
 @synthesize scannerViewController = _viewController;
 
-- (id)initWithPlugin:(B4HVINScannerPluginClass*)plugin parentViewController:(UIViewController*)parentViewController
+- (instancetype)initWithPlugin:(B4HVINScannerPluginClass*)plugin parentViewController:(UIViewController*)parentViewController orientationMaskKey:(NSString*)orientationMaskKey
 {
     self = [super init];
-    if (!self) return self;
+    if (!self) {
+        return self;
+    }
+    self.orientationMaskKey = orientationMaskKey;
     self.plugin = plugin;
     self.parentViewController = parentViewController;
     return self;
@@ -101,11 +107,12 @@
 {
     self.scannerViewController = [[B4HOverlayViewController alloc] initWithNibName:@"B4HOverlayViewController" bundle:nil];
     self.scannerViewController.delegate = self;
+    self.scannerViewController.scannerOrientationMask = [self scannerOrientationMask];
     B4HScannerController *controller = [[B4HScannerController alloc] initWithOrientation:B4HScannerHorizontal];
-    
+
     NSString* errorMessage = [self checkLibraryStatus:controller];
     if (errorMessage)
-	{
+    {
         [self barcodeScanFailed:errorMessage];
         return;
     }
@@ -145,37 +152,47 @@
 
 - (NSString*)checkLibraryStatus:(B4HScannerController*)scanner
 {
-	B4HScannerLibraryStatus scannerStatus = [scanner CheckReadyStatus];
-	
-	NSString *errorDescription = nil;
-	switch (scannerStatus)
-	{
-		case B4HState_WrongLinkingOptions:
-			errorDescription = @"Scanner is not ready due to wrong linking options";
-			break;
-			
-		case B4HState_MissingOSLibraries:
-			errorDescription = @"Some of needed OS libraries are missing";
-			break;
-			
-		case B4HState_NoCamera:
-			errorDescription = @"Device has no camera available";
-			break;
-			
-		case B4HState_BadLicense:
-			errorDescription = @"Licence file is not valid or corrupted";
-			break;
-			
-		case B4HState_ScanLimitReached:
-			errorDescription = @"Scanner has reached its limit for VIN code recognizing in evaluation mode";
-			break;
-			
-		default:
-			errorDescription = nil;
-			break;
-	}
-    
-	return errorDescription;
+    B4HScannerLibraryStatus scannerStatus = [scanner CheckReadyStatus];
+
+    NSString *errorDescription = nil;
+    switch (scannerStatus)
+    {
+        case B4HState_WrongLinkingOptions:
+            errorDescription = @"Scanner is not ready due to wrong linking options";
+            break;
+
+        case B4HState_MissingOSLibraries:
+            errorDescription = @"Some of needed OS libraries are missing";
+            break;
+
+        case B4HState_NoCamera:
+            errorDescription = @"Device has no camera available";
+            break;
+
+        case B4HState_BadLicense:
+            errorDescription = @"Licence file is not valid or corrupted";
+            break;
+
+        case B4HState_ScanLimitReached:
+            errorDescription = @"Scanner has reached its limit for VIN code recognizing in evaluation mode";
+            break;
+
+        default:
+            errorDescription = nil;
+            break;
+    }
+
+    return errorDescription;
+}
+
+- (UIInterfaceOrientationMask)scannerOrientationMask {
+    if ([self.orientationMaskKey isEqual:@"portrait"]) {
+        return UIInterfaceOrientationMaskPortrait;
+    }
+    if ([self.orientationMaskKey isEqual:@"landscape"]) {
+        return UIInterfaceOrientationMaskLandscape;
+    }
+    return UIInterfaceOrientationMaskAll;
 }
 
 @end

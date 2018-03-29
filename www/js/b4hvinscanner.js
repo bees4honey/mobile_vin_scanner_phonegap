@@ -3,9 +3,11 @@ function VINBarcodeScanner () {
 }
 
 //-------------------------------------------------------------------
-VINBarcodeScanner.prototype.scan = function(successCallback, errorCallback) {
+VINBarcodeScanner.prototype.scan = function(successCallback, errorCallback, scanOrientationMask) {
     console.log("VINBarcodeScanner.scan method called");
-    if (errorCallback == null) { errorCallback = function() {}}
+    if (errorCallback == null) {
+        errorCallback = function() {}
+    }
 
     if (typeof errorCallback != "function")  {
         console.log("VINBarcodeScanner.scan failure: failure parameter not a function");
@@ -17,7 +19,11 @@ VINBarcodeScanner.prototype.scan = function(successCallback, errorCallback) {
         return
     }
 
-    return cordova.exec(successCallback, errorCallback, 'VinBarScanner', 'scan', []);
+    if (scanOrientationMask == null) {
+        scanOrientationMask = "all"
+    }
+
+    return cordova.exec(successCallback, errorCallback, 'VinBarScanner', 'scan', [scanOrientationMask]);
 };
 
 if (!window.plugins) window.plugins = {}

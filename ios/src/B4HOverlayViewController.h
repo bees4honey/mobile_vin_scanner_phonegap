@@ -25,6 +25,7 @@
 }
 
 @property (strong, nonatomic) id<B4HOverlayDelegate> delegate;
+@property (nonatomic) UIInterfaceOrientationMask scannerOrientationMask;
 
 //	Turn on/off torchlight if avaliable
 - (IBAction)ledButtonClick;

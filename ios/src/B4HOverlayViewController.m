@@ -14,7 +14,7 @@
 - (id)initWithNibName: (NSString *) nibNameOrNil bundle: (NSBundle *) nibBundleOrNil {
 	self = [super initWithNibName: nibNameOrNil bundle: nibBundleOrNil];
 	if (self) {
-		// Custom initialization
+		self.scannerOrientationMask = UIInterfaceOrientationMaskAll;
 	}
 	return self;
 }
@@ -37,10 +37,11 @@
 	else {
 		[startButton setTitle: @"stop" forState: UIControlStateNormal];
 	}
-   	
+
 	if ([AVCaptureDevice defaultDeviceWithMediaType: AVMediaTypeVideo].hasTorch)
 		ledButton.hidden = NO;
 }
+
 - (void)viewWillAppear: (BOOL) animated {
 	[super viewWillAppear:animated];
 	codeLabel.hidden = YES;
@@ -53,7 +54,7 @@
 
 -(NSUInteger)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskAll;
+    return self.scannerOrientationMask;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation {
@@ -95,9 +96,9 @@
 	}
 	else {
 		[self.parentScanner startScanningWithOrientation:B4HScannerHorizontal];
-        
+
         [self setBackgroundForScanOrientation:B4HScannerHorizontal];
-        
+
 		[startButton setTitle: @"stop" forState: UIControlStateNormal];
 	}
 	pauseLabel.hidden = !pauseLabel.hidden;
@@ -128,14 +129,14 @@
         // set vertical scan orientation
         self.parentScanner.scanOrientation = B4HScannerVertical;
     }
-    
+
     [self setBackgroundForScanOrientation:self.parentScanner.scanOrientation];
 }
 
 - (void)setBackgroundForScanOrientation:(B4HScannerOrientation)scanOrientation {
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     BOOL isLandscape =  UIDeviceOrientationIsLandscape(orientation);
-    
+
     if (scanOrientation == B4HScannerHorizontal) {
         if (isLandscape) {
             background.image = [UIImage imageNamed:@"backgroundLandscapeHorizontal.png"];
